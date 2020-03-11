@@ -23,7 +23,7 @@
 (def column-style
   (if (> nrows 5) :orthographic :standard))  ; options include :standard, :orthographic, and :fixed
 ; (def column-style :fixed)
-(def pinky-15u true)
+(def pinky-15u false)
 
 (defn column-offset [column] (cond
                                (= column 2) [0 2.82 -4.5]
@@ -32,7 +32,7 @@
 
 (def thumb-offsets [6 -3 7])
 
-(def keyboard-z-offset 9)               ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
+(def keyboard-z-offset 11)               ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
 
 (def extra-width 2.5)                   ; extra space between the base of keys; original= 2
 (def extra-height 1.0)                  ; original= 0.5
@@ -67,8 +67,8 @@
 ;; Switch Hole ;;
 ;;;;;;;;;;;;;;;;;
 
-(def keyswitch-height 14.2) ;; Was 14.1, then 14.25
-(def keyswitch-width 14.2)
+(def keyswitch-height 14.1) ;; Was 14.1, then 14.25
+(def keyswitch-width 14.1)
 
 (def sa-profile-key-height 12.7)
 
@@ -359,8 +359,8 @@
 
 (defn thumb-1x-layout [shape]
   (union
-   (thumb-mr-place shape)
-   (thumb-br-place shape)
+  ;  (thumb-mr-place shape)
+  ;  (thumb-br-place shape)
    (thumb-tl-place shape)
    (thumb-bl-place shape)))
 
@@ -399,36 +399,38 @@
     (thumb-tl-place web-post-br)
     (thumb-tr-place thumb-post-tl)
     (thumb-tr-place thumb-post-bl))
-   (triangle-hulls    ; bottom two
-    (thumb-br-place web-post-tr)
-    (thumb-br-place web-post-br)
-    (thumb-mr-place web-post-tl)
-    (thumb-mr-place web-post-bl))
-   (triangle-hulls
-    (thumb-mr-place web-post-tr)
-    (thumb-mr-place web-post-br)
-    (thumb-tr-place thumb-post-br))
-   (triangle-hulls    ; between top row and bottom row
-    (thumb-br-place web-post-tl)
-    (thumb-bl-place web-post-bl)
-    (thumb-br-place web-post-tr)
-    (thumb-bl-place web-post-br)
-    (thumb-mr-place web-post-tl)
-    (thumb-tl-place web-post-bl)
-    (thumb-mr-place web-post-tr)
-    (thumb-tl-place web-post-br)
-    (thumb-tr-place web-post-bl)
-    (thumb-mr-place web-post-tr)
-    (thumb-tr-place web-post-br))
+  ;  (triangle-hulls    ; bottom two
+    ; (thumb-br-place web-post-tr)
+    ; (thumb-br-place web-post-br)
+    ; (thumb-mr-place web-post-tl)
+    ; (thumb-mr-place web-post-bl)
+    ; )
+  ;  (triangle-hulls
+  ;   (thumb-mr-place web-post-tr)
+  ;   (thumb-mr-place web-post-br)
+  ;   (thumb-tr-place thumb-post-br))
+  ;  (triangle-hulls    ; between top row and bottom row
+    ; (thumb-br-place web-post-tl)
+    ; (thumb-bl-place web-post-bl)
+    ; (thumb-br-place web-post-tr)
+    ; (thumb-bl-place web-post-br)
+    ; (thumb-mr-place web-post-tl)
+    ; (thumb-tl-place web-post-bl)
+    ; (thumb-mr-place web-post-tr)
+    ; (thumb-tl-place web-post-br)
+    ; (thumb-tr-place web-post-bl)
+    ; (thumb-mr-place web-post-tr)
+    ; (thumb-tr-place web-post-br))
    (triangle-hulls    ; top two to the middle two, starting on the left
     (thumb-tl-place web-post-tl)
     (thumb-bl-place web-post-tr)
     (thumb-tl-place web-post-bl)
     (thumb-bl-place web-post-br)
-    (thumb-mr-place web-post-tr)
+    ; (thumb-mr-place web-post-tr)
     (thumb-tl-place web-post-bl)
     (thumb-tl-place web-post-br)
-    (thumb-mr-place web-post-tr))
+    ; (thumb-mr-place web-post-tr)
+    )
    (triangle-hulls    ; top two to the main keyboard, starting on the left
     (thumb-tl-place web-post-tl)
     (key-place 0 cornerrow web-post-bl)
@@ -544,18 +546,27 @@
    (for [x (range 4 ncols)] (key-wall-brace x cornerrow 0 -1 web-post-bl x       cornerrow 0 -1 web-post-br)) ; TODO fix extra wall
    (for [x (range 5 ncols)] (key-wall-brace x cornerrow 0 -1 web-post-bl (dec x) cornerrow 0 -1 web-post-br))
    ; thumb walls
-   (wall-brace thumb-mr-place  0 -1 web-post-br thumb-tr-place  0 -1 thumb-post-br)
-   (wall-brace thumb-mr-place  0 -1 web-post-br thumb-mr-place  0 -1 web-post-bl)
-   (wall-brace thumb-br-place  0 -1 web-post-br thumb-br-place  0 -1 web-post-bl)
+
+  ;  (wall-brace thumb-mr-place  0 -1 web-post-br thumb-tr-place  0 -1 thumb-post-br)
+   (wall-brace thumb-tr-place  0 -1 web-post-bl thumb-tr-place  0 -1 web-post-br)
+
+  ;  (wall-brace thumb-mr-place  0 -1 web-post-br thumb-mr-place  0 -1 web-post-bl)
+   (wall-brace thumb-tr-place  0 -1 web-post-bl thumb-tl-place  0 -1 web-post-br)
+
+  ;  (wall-brace thumb-br-place  0 -1 web-post-br thumb-br-place  0 -1 web-post-bl)
+   (wall-brace thumb-bl-place  0 -1 web-post-br thumb-bl-place  0 -1 web-post-bl)
+   (wall-brace thumb-bl-place  0 -1 web-post-br thumb-tl-place  0 -1 web-post-bl)
+   (wall-brace thumb-tl-place  0 -1 web-post-bl thumb-tl-place  0 -1 web-post-br)
+
    (wall-brace thumb-bl-place  0  1 web-post-tr thumb-bl-place  0  1 web-post-tl)
-   (wall-brace thumb-br-place -1  0 web-post-tl thumb-br-place -1  0 web-post-bl)
+  ;  (wall-brace thumb-br-place -1  0 web-post-tl thumb-br-place -1  0 web-post-bl)
    (wall-brace thumb-bl-place -1  0 web-post-tl thumb-bl-place -1  0 web-post-bl)
    ; thumb corners
-   (wall-brace thumb-br-place -1  0 web-post-bl thumb-br-place  0 -1 web-post-bl)
+   (wall-brace thumb-bl-place -1  0 web-post-bl thumb-bl-place  0 -1 web-post-bl)
    (wall-brace thumb-bl-place -1  0 web-post-tl thumb-bl-place  0  1 web-post-tl)
    ; thumb tweeners
-   (wall-brace thumb-mr-place  0 -1 web-post-bl thumb-br-place  0 -1 web-post-br)
-   (wall-brace thumb-bl-place -1  0 web-post-bl thumb-br-place -1  0 web-post-tl)
+  ;  (wall-brace thumb-mr-place  0 -1 web-post-bl thumb-br-place  0 -1 web-post-br)
+  ;  (wall-brace thumb-bl-place -1  0 web-post-bl thumb-br-place -1  0 web-post-tl)
    (wall-brace thumb-tr-place  0 -1 thumb-post-br (partial key-place 3 lastrow)  0 -1 web-post-bl)
    ; clunky bit on the top left thumb connection  (normal connectors don't work well)
    (bottom-hull
@@ -655,7 +666,7 @@
         ;  (screw-insert lastcol 0         bottom-radius top-radius height [-3 6 0])
          (screw-insert lastcol lastrow  bottom-radius top-radius height [0 12 0])
          (screw-insert lastcol 0         bottom-radius top-radius height [0 7 0])
-         (screw-insert 1 lastrow         bottom-radius top-radius height [0 -16 0])))
+         (screw-insert 1 lastrow         bottom-radius top-radius height [0 0 0])))
 
 ; Hole Depth Y: 4.4
 (def screw-insert-height 4)
