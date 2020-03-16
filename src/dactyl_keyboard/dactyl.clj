@@ -32,7 +32,7 @@
 
 (def thumb-offsets [6 -3 7])
 
-(def keyboard-z-offset 11)               ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
+(def keyboard-z-offset 15)               ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
 
 (def extra-width 2.5)                   ; extra space between the base of keys; original= 2
 (def extra-height 1.0)                  ; original= 0.5
@@ -520,6 +520,40 @@
            (for [y (range 1 lastrow)] (key-wall-brace lastcol (dec y) 1 0 br lastcol y 1 0 tr))
            (key-wall-brace lastcol cornerrow 0 -1 br lastcol cornerrow 1 0 br))))
 
+(def wrist-joint (extrude-linear {:height 20} (polygon [[0, 0], [15, 0], [13, 6], [2, 6]])))
+(def wrist-joints
+  (union
+    (translate [45,-55, 0] wrist-joint)
+    (rotate (deg2rad 15) [0 0 1] (translate [-45,-56, 0] wrist-joint))
+  )
+)
+
+(def front-wall
+  (union
+   (key-wall-brace 3 lastrow 0 -1 web-post-bl 3 lastrow 0 -1 web-post-br)
+   (key-wall-brace 3 lastrow 0 -1 web-post-br 4 cornerrow 0 -1 web-post-bl)
+   (for [x (range 4 ncols)] (key-wall-brace x cornerrow 0 -1 web-post-bl x       cornerrow 0 -1 web-post-br)) ; TODO fix extra wall
+   (for [x (range 5 ncols)] (key-wall-brace x cornerrow 0 -1 web-post-bl (dec x) cornerrow 0 -1 web-post-br))
+  )
+)
+(def thumb-wall
+  (union
+   (wall-brace thumb-tr-place  0 -1 web-post-bl thumb-tr-place  0 -1 web-post-br)
+   (wall-brace thumb-tr-place  0 -1 web-post-bl thumb-tl-place  0 -1 web-post-br)
+   (wall-brace thumb-bl-place  0 -1 web-post-br thumb-bl-place  0 -1 web-post-bl)
+   (wall-brace thumb-bl-place  0 -1 web-post-br thumb-tl-place  0 -1 web-post-bl)
+   (wall-brace thumb-tl-place  0 -1 web-post-bl thumb-tl-place  0 -1 web-post-br)
+   (wall-brace thumb-bl-place  0  1 web-post-tr thumb-bl-place  0  1 web-post-tl)
+   (wall-brace thumb-bl-place -1  0 web-post-tl thumb-bl-place -1  0 web-post-bl)
+   ; thumb corners
+   (wall-brace thumb-bl-place -1  0 web-post-bl thumb-bl-place  0 -1 web-post-bl)
+   (wall-brace thumb-bl-place -1  0 web-post-tl thumb-bl-place  0  1 web-post-tl)
+   ; thumb tweeners
+   (wall-brace thumb-tr-place  0 -1 thumb-post-br (partial key-place 3 lastrow)  0 -1 web-post-bl)
+  )
+)
+
+
 (def case-walls
   (union
    right-wall
@@ -540,40 +574,14 @@
                                            (left-key-place (dec y) -1 web-post))))
    (wall-brace (partial key-place 0 0) 0 1 web-post-tl (partial left-key-place 0 1) 0 1 web-post)
    (wall-brace (partial left-key-place 0 1) 0 1 web-post (partial left-key-place 0 1) -1 0 web-post)
-   ; front wall
-   (key-wall-brace 3 lastrow   0 -1 web-post-bl 3 lastrow 0.5 -1 web-post-br)
-   (key-wall-brace 3 lastrow 0.5 -1 web-post-br 4 cornerrow 0.5 -1 web-post-bl)
-   (for [x (range 4 ncols)] (key-wall-brace x cornerrow 0 -1 web-post-bl x       cornerrow 0 -1 web-post-br)) ; TODO fix extra wall
-   (for [x (range 5 ncols)] (key-wall-brace x cornerrow 0 -1 web-post-bl (dec x) cornerrow 0 -1 web-post-br))
-   ; thumb walls
-
-  ;  (wall-brace thumb-mr-place  0 -1 web-post-br thumb-tr-place  0 -1 thumb-post-br)
-   (wall-brace thumb-tr-place  0 -1 web-post-bl thumb-tr-place  0 -1 web-post-br)
-
-  ;  (wall-brace thumb-mr-place  0 -1 web-post-br thumb-mr-place  0 -1 web-post-bl)
-   (wall-brace thumb-tr-place  0 -1 web-post-bl thumb-tl-place  0 -1 web-post-br)
-
-  ;  (wall-brace thumb-br-place  0 -1 web-post-br thumb-br-place  0 -1 web-post-bl)
-   (wall-brace thumb-bl-place  0 -1 web-post-br thumb-bl-place  0 -1 web-post-bl)
-   (wall-brace thumb-bl-place  0 -1 web-post-br thumb-tl-place  0 -1 web-post-bl)
-   (wall-brace thumb-tl-place  0 -1 web-post-bl thumb-tl-place  0 -1 web-post-br)
-
-   (wall-brace thumb-bl-place  0  1 web-post-tr thumb-bl-place  0  1 web-post-tl)
-  ;  (wall-brace thumb-br-place -1  0 web-post-tl thumb-br-place -1  0 web-post-bl)
-   (wall-brace thumb-bl-place -1  0 web-post-tl thumb-bl-place -1  0 web-post-bl)
-   ; thumb corners
-   (wall-brace thumb-bl-place -1  0 web-post-bl thumb-bl-place  0 -1 web-post-bl)
-   (wall-brace thumb-bl-place -1  0 web-post-tl thumb-bl-place  0  1 web-post-tl)
-   ; thumb tweeners
-  ;  (wall-brace thumb-mr-place  0 -1 web-post-bl thumb-br-place  0 -1 web-post-br)
-  ;  (wall-brace thumb-bl-place -1  0 web-post-bl thumb-br-place -1  0 web-post-tl)
-   (wall-brace thumb-tr-place  0 -1 thumb-post-br (partial key-place 3 lastrow)  0 -1 web-post-bl)
+   front-wall
+   thumb-wall
    ; clunky bit on the top left thumb connection  (normal connectors don't work well)
    (bottom-hull
     (left-key-place cornerrow -1 (translate (wall-locate2 -1 0) web-post))
     (left-key-place cornerrow -1 (translate (wall-locate3 -1 0) web-post))
-    (thumb-bl-place (translate (wall-locate2 -0.3 1) web-post-tr))
-    (thumb-bl-place (translate (wall-locate3 -0.3 1) web-post-tr)))
+    (thumb-bl-place (translate (wall-locate2 0 1) web-post-tr))
+    (thumb-bl-place (translate (wall-locate3 0 1) web-post-tr)))
    (hull
     (left-key-place cornerrow -1 (translate (wall-locate2 -1 0) web-post))
     (left-key-place cornerrow -1 (translate (wall-locate3 -1 0) web-post))
@@ -600,8 +608,8 @@
 
 (def usb-holder-ref (key-position 0 0 (map - (wall-locate2  0  -1) [0 (/ mount-height 2) 0])))
 
-(def usb-holder-position (map + [17 19.3 0] [(first usb-holder-ref) (second usb-holder-ref) 2]))
-(def usb-holder-cube   (cube 15 12 2))
+(def usb-holder-position (map + [6 19.3 2] [(first usb-holder-ref) (second usb-holder-ref) 3.5]))
+(def usb-holder-cube   (cube 19 12 2))
 (def usb-holder-space  (translate (map + usb-holder-position [0 (* -1 wall-thickness) 1]) usb-holder-cube))
 (def usb-holder-holder (translate usb-holder-position (cube 19 12 4)))
 
@@ -622,13 +630,13 @@
 
 (def trrs-holder-size [6.2 10 2]) ; trrs jack PJ-320A
 (def trrs-holder-hole-size [6.2 10 6]) ; trrs jack PJ-320A
-(def trrs-holder-position  (map + usb-holder-position [-13.6 0 0]))
+(def trrs-holder-position  (map + usb-holder-position [36 2.8 0]))
 (def trrs-holder-thickness 2)
 (def trrs-holder-thickness-2x (* 2 trrs-holder-thickness))
 (def trrs-holder
   (union
    (->> (cube (+ (first trrs-holder-size) trrs-holder-thickness-2x) (+ trrs-holder-thickness (second trrs-holder-size)) (+ (last trrs-holder-size) trrs-holder-thickness))
-        (translate [(first trrs-holder-position) (second trrs-holder-position) (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2)]))))
+        (translate [(first trrs-holder-position) (second trrs-holder-position) (+ 4 (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2))]))))
 (def trrs-holder-hole
   (union
 
@@ -636,16 +644,19 @@
    (->>
     (->> (binding [*fn* 30] (cylinder 2.55 20))) ; 5mm trrs jack
     (rotate (deg2rad  90) [1 0 0])
-    (translate [(first trrs-holder-position) (+ (second trrs-holder-position) (/ (+ (second trrs-holder-size) trrs-holder-thickness) 2)) (+ 3 (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2))])) ;1.5 padding
+    (translate [(first trrs-holder-position) (+ (second trrs-holder-position) (/ (+ (second trrs-holder-size) trrs-holder-thickness) 2)) (+ 2 (+ 3 (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2)))])) ;1.5 padding
 
   ; rectangular trrs holder
-   (->> (apply cube trrs-holder-hole-size) (translate [(first trrs-holder-position) (+ (/ trrs-holder-thickness -2) (second trrs-holder-position)) (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness)]))))
+   (->> (apply cube trrs-holder-hole-size) (translate [(first trrs-holder-position) (+ (/ trrs-holder-thickness -2) (second trrs-holder-position)) (+ 2 (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness))])))
+   )
 
 (defn screw-insert-shape [bottom-radius top-radius height]
-  (union
+  ; (union
    (->> (binding [*fn* 30]
-          (cylinder [bottom-radius top-radius] height)))
-   (translate [0 0 (/ height 2)] (->> (binding [*fn* 30] (sphere top-radius))))))
+          (cylinder [bottom-radius top-radius] height)
+          ))
+  ;  (translate [0 0 (/ height 2)] (->> (binding [*fn* 30] (sphere top-radius)))))
+   )
 
 (defn screw-insert [column row bottom-radius top-radius height offset]
   (let [shift-right   (= column lastcol)
@@ -660,13 +671,13 @@
          (translate (map + offset [(first position) (second position) (/ height 2)])))))
 
 (defn screw-insert-all-shapes [bottom-radius top-radius height]
-  (union (screw-insert 0 0         bottom-radius top-radius height [11 10 0])
-         (screw-insert 0 lastrow   bottom-radius top-radius height [0 0 0])
+  (union (screw-insert 0 0         bottom-radius top-radius height [5 0 4])
+         (screw-insert 0 lastrow   bottom-radius top-radius height [1 0 4])
         ;  (screw-insert lastcol lastrow  bottom-radius top-radius height [-5 13 0])
         ;  (screw-insert lastcol 0         bottom-radius top-radius height [-3 6 0])
-         (screw-insert lastcol lastrow  bottom-radius top-radius height [0 12 0])
-         (screw-insert lastcol 0         bottom-radius top-radius height [0 7 0])
-         (screw-insert 1 lastrow         bottom-radius top-radius height [0 0 0])))
+         (screw-insert lastcol lastrow  bottom-radius top-radius height [(if pinky-15u 1 -5) 14 4])
+         (screw-insert lastcol 0         bottom-radius top-radius height [(if pinky-15u 1 -5) 6 4])
+         (screw-insert 1 lastrow         bottom-radius top-radius height [0 5 4])))
 
 ; Hole Depth Y: 4.4
 (def screw-insert-height 4)
@@ -674,11 +685,12 @@
 ; Hole Diameter C: 4.1-4.4
 (def screw-insert-bottom-radius (/ 4.4 2))
 (def screw-insert-top-radius (/ 4.4 2))
-(def screw-insert-holes  (screw-insert-all-shapes screw-insert-bottom-radius screw-insert-top-radius screw-insert-height))
+(def screw-insert-holes  (translate [0 0 -1] (screw-insert-all-shapes 0.8 0.8 (+ screw-insert-height 2))))
 
 ; Wall Thickness W:\t1.65
-(def screw-insert-outers (screw-insert-all-shapes (+ screw-insert-bottom-radius 1.65) (+ screw-insert-top-radius 1.65) (+ screw-insert-height 1.5)))
-(def screw-insert-screw-holes  (screw-insert-all-shapes 1.7 1.7 350))
+(def screw-insert-outers (screw-insert-all-shapes (+ screw-insert-bottom-radius 1.65) (+ screw-insert-top-radius 1.65) (+ screw-insert-height 0)))
+(def screw-insert-screw-holes  (screw-insert-all-shapes 0.8 0.8 350))
+
 
 (def pinky-connectors
   (apply union
@@ -706,27 +718,52 @@
    (key-wall-brace lastcol cornerrow 0 -1 web-post-br lastcol cornerrow 0 -1 wide-post-br)
    (key-wall-brace lastcol 0 0 1 web-post-tr lastcol 0 0 1 wide-post-tr)))
 
-(def model-right (difference
-                  (union
-                   key-holes
-                   pinky-connectors
-                   pinky-walls
-                   connectors
-                   thumb
-                   thumb-connectors
-                   (difference (union case-walls
-                                      screw-insert-outers
-                                      pro-micro-holder
-                                      usb-holder-holder
-                                      trrs-holder)
-                               usb-holder-space
-                               usb-jack
-                               trrs-holder-hole
-                               screw-insert-holes))
-                  (translate [0 0 -20] (cube 350 350 40))))
+
+(defn cut-middle [shape] (difference shape (translate [0 0 -20] (cube 350 350 40))))
+
+(def model-walls
+  (difference
+    (union
+      case-walls
+      screw-insert-outers
+    )
+    usb-holder-space
+    usb-jack
+    trrs-holder-hole
+    screw-insert-holes
+  )
+)
+
+(def model-right 
+  (cut-middle
+    (union
+      key-holes
+      pinky-connectors
+      pinky-walls
+      connectors
+      thumb
+      thumb-connectors
+      model-walls
+      wrist-joints
+    )
+  )
+)
+
+(defn cut-top [shape]
+  (difference
+    shape
+    (translate [0 0 182] (cube 350 350 350)) 
+  )
+)
 
 (spit "things/right.scad"
       (write-scad model-right))
+
+(spit "things/right-wall.scad"
+      (write-scad (cut-top (cut-middle model-walls))))
+
+(spit "things/right-wall-joint.scad"
+      (write-scad (cut-top (cut-middle (union model-walls wrist-joints)))))
 
 (spit "things/left.scad"
       (write-scad (mirror [-1 0 0] model-right)))
@@ -747,14 +784,13 @@
 
         (translate [0 0 -20] (cube 350 350 40)))))
 
-(spit "things/right-plate.scad"
-      (write-scad
-       (cut
-        (translate [0 0 -0.1]
-                   (difference (union case-walls
-                                      pinky-walls
-                                      screw-insert-outers)
-                               (translate [0 0 -10] screw-insert-screw-holes))))))
+; (spit "things/right-plate.scad"
+;       (write-scad
+;        (cut
+;         (translate [0 0 -4]
+;                    (difference (union case-walls
+;                                       pinky-walls)
+;                                (translate [0 0 -10] screw-insert-screw-holes))))))
 
 (spit "things/test.scad"
       (write-scad
