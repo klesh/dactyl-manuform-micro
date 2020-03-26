@@ -1,10 +1,11 @@
+![dactyl-manuform-micro-wiring](https://user-images.githubusercontent.com/61080/77671457-9efde780-6fc2-11ea-8700-d4a23125b4fe.jpg)
+![dactyl-manuform-micro](https://user-images.githubusercontent.com/61080/77671473-a3c29b80-6fc2-11ea-8560-f24b60ecb28f.jpg)
+
 # Dactyl ManuForm Micro Keyboard
 
 This is a fork of the [Dactyl Manuform Mini Keyboard](https://github.com/l4u/dactyl-manuform-mini-keyboard). Checkout the Fork History for detail.
 
-Build log: https://www.beekeeb.com/dactyl-manuform-mini-mechanical-keyboard-build-log/
-
-## Fork History (original -> latest)
+# Fork History (original -> latest)
 
 - https://github.com/adereth/dactyl-keyboard
 - https://github.com/jeffgran/ManuForm
