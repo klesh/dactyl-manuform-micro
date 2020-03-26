@@ -1,38 +1,54 @@
-# Dactyl ManuForm Mini Keyboard
+# Dactyl ManuForm Micro Keyboard
 
-This is a fork of the [Dactyl-ManuForm](https://github.com/tshort/dactyl-keyboard). The Dactyl-Manuform is a fork of the [Dactyl](https://github.com/adereth/dactyl-keyboard) with the thumb cluster from [ManuForm](https://github.com/jeffgran/ManuForm).
+This is a fork of the [Dactyl Manuform Mini Keyboard](https://github.com/l4u/dactyl-manuform-mini-keyboard). Checkout the Fork History for detail.
 
 Build log: https://www.beekeeb.com/dactyl-manuform-mini-mechanical-keyboard-build-log/
 
-## Forks
+## Fork History (original -> latest)
 
+- https://github.com/adereth/dactyl-keyboard
+- https://github.com/jeffgran/ManuForm
+- https://github.com/tshort/dactyl-keyboard
 - https://github.com/lebastaq/dactyl-manuform-mini-keyboard
+- https://github.com/l4u/dactyl-manuform-mini-keyboard
 
 ## Features
 
-- The use of sidenubs can be disabled. Sidenub should be disabled if you use Kailh, and Outemu. If you use Cherry MX, Gateron or Zealios switches, you can enable the sidenubs.
-- Spaces for rentention tabs are added.
-- One key in the thumb cluster has been removed. Other thumb keys are also adjusted.
-- The total height is reduced and wire posts are removed. This results in a
-  higher printing speed and a lower cost.
-- A TRRS mount instead of a RJ9 mount is used.
-- A micro USB mount is used. A breakout board, or an extension cable can be used.
-- Screw posts are moved inside. The holes are designed for TRISERT® thread inserts 145m3.
-- The pro micro holder has been modified. Dupont cables can be used.
+- Fully 3D-Printing cases, plates and wrist-rests.
+- Reduce number of keys of thumb cluster to 3.
+- Wrist-rest hookup mechanisim.
+- TRRS/ProMicro are mounted on plate
+- Use tapping screw,  no Heat-set insert is needed
 
 ## Generate OpenSCAD and STL models
 
 * Run `lein generate` or `lein auto generate`
 * This will regenerate the `things/*.scad` files
 * Use OpenSCAD to open a `.scad` file.
-* Make changes to design, repeat `load-file`, OpenSCAD will watch for changes and rerender.
-* When done, use OpenSCAD to export STL files
+* Make changes to design, `.scad` files will be regenerated automatically, and OpenSCAD will auto refresh if you used `lein auto generate`.
+* When done, use OpenSCAD to export STL files, remember you need to render it first by press F6
 
+
+## How to build
+
+- Generate STL files or download from [thingiverse](https://www.thingiverse.com/thing:4242794)
+- Print the right side with these files: `right.stl`, `plate.stl`, `wrist-rest.stl`, and mirror them for the left side
+- Wire up switches by following this wonderful guide: https://github.com/abstracthat/dactyl-manuform . (Just skip those missing keys)
+- Use (QMK Configurator)[https://config.qmk.fm/#/handwired/dactyl_manuform/5x6/LAYOUT_5x6] to build your firmware: Hit compile button and wait a sec then click on firmware to download
+- Use (QMK Toolbox)[https://github.com/qmk/qmk_toolbox] on Windows or (QMK CLI)[https://github.com/qmk/qmk_cli] on Linux to flash your Pro-Micros (remember to short RST and GND pins to make them flashable)
+- Hot glue USB jack onto the board for ProMicro, this is VERY IMPORTANT, I paid 2 pcs for this lesson. Then, Hot glue ProMicro and TRRS onto plate.
+
+
+## How to remix
+
+If you want to change number of rows, you can import `plate-reference.stl` to your favourite CAD software and make a new plate.
+
+For the wrist-rest, use `wrist-rest-reference.stl` for cutting if your CAD software unable to convert the `right.stl` correctly.
 
 
 ## License
 
-Copyright © 2015-2018 Matthew Adereth, Tom Short and Leo Lou
+Copyright © 2015-2018 Matthew Adereth, Tom Short, Leo Lou and others
 
 The source code for generating the models is distributed under the [GNU AFFERO GENERAL PUBLIC LICENSE Version 3](LICENSE).
 
