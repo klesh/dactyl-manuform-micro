@@ -32,7 +32,7 @@ This is a fork of the [Dactyl Manuform Mini Keyboard](https://github.com/l4u/dac
 
 ## How to build
 
-- Generate STL files or download from [thingiverse](https://www.thingiverse.com/thing:4242794)
+- Generate STL files or download from [thingiverse](https://www.thingiverse.com/thing:4242792/files)
 - Print the right side with these files: `right.stl`, `plate.stl`, `wrist-rest.stl`, and mirror them for the left side
 - Wire up switches by following this wonderful guide: https://github.com/abstracthat/dactyl-manuform . (Just skip those missing keys)
 - Use (QMK Configurator)[https://config.qmk.fm/#/handwired/dactyl_manuform/5x6/LAYOUT_5x6] to build your firmware: Hit compile button and wait a sec then click on firmware to download
